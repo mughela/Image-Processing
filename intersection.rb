@@ -226,3 +226,134 @@ end
 
 puts "with left gradient"
 puts sum2
+
+im = ChunkyPNG::Image.from_file("gradright_resize.png")
+
+heighth3 = im.dimension.height
+widthw3 = im.dimension.width
+pi = Array.new(1200){Array.new(630)}
+heighth3.times do |i|
+ widthw3.times do |j|
+   arr = ChunkyPNG::Color.a(im[j,i])
+   arr/=255.0
+   pi[i][j]=arr.round(3)
+ end
+end
+
+'''for i in (0...heighth3)
+	puts "#{pi[i]}"
+end'''
+
+ss = 0
+qq = 0
+aa = 30
+bb = 30
+avg = Array.new(40){Array.new(21)}
+for kk in (0...21)
+	for ll in (0...40)
+		sum = 0
+		for ee in (ss...bb)
+			for ff in (qq...aa)
+				sum += pi[ee][ff]
+			end
+		end
+		#puts sum
+		#puts qq,aa,ss,bb
+		#puts "\n"
+		av = (sum / 900.0).round(2)
+		avg[kk][ll] = av
+		qq = aa
+		aa += 30
+	end
+	ss = bb
+	bb += 30
+	qq = 0
+	aa = 30
+end
+
+for i in (0...21)
+	puts "#{avg[i]}"
+end
+
+
+sum3 = 0
+for g in (0...21)
+	for h in (0...40)
+		sum3 += m[g][h] * avg[g][h]
+	end
+end
+
+puts "with right gradient"
+puts sum3
+
+im = ChunkyPNG::Image.from_file("gradtop_resize.png")
+
+heighth4 = im.dimension.height
+widthw4 = im.dimension.width
+pi = Array.new(1200){Array.new(630)}
+heighth4.times do |i|
+ widthw4.times do |j|
+   arr = ChunkyPNG::Color.a(im[j,i])
+   arr/=255.0
+   pi[i][j]=arr.round(3)
+ end
+end
+
+'''for i in (0...heighth4)
+	puts "#{pi[i]}"
+end'''
+
+ss = 0
+qq = 0
+aa = 30
+bb = 30
+avg = Array.new(40){Array.new(21)}
+for kk in (0...21)
+	for ll in (0...40)
+		sum = 0
+		for ee in (ss...bb)
+			for ff in (qq...aa)
+				sum += pi[ee][ff]
+			end
+		end
+		#puts sum
+		#puts qq,aa,ss,bb
+		#puts "\n"
+		av = (sum / 900.0).round(2)
+		avg[kk][ll] = av
+		qq = aa
+		aa += 30
+	end
+	ss = bb
+	bb += 30
+	qq = 0
+	aa = 30
+end
+
+for i in (0...21)
+	puts "#{avg[i]}"
+end
+
+
+sum4 = 0
+for g in (0...21)
+	for h in (0...40)
+		sum4 += m[g][h] * avg[g][h]
+	end
+end
+
+puts "with top gradient"
+puts sum4
+
+min_coincidence = [sum1,sum2,sum3,sum4].min
+
+#based on the minimum coincidence image composition is made.
+
+if min_coincidence == sum1
+	`composite -gravity center gradbot_resize.jpeg #{img} output.jpeg`
+elsif min_coincidence == sum2
+	`composite -gravity center gradleft_resize.jpeg #{img} output.jpeg`
+elsif min_coincidence == sum3
+	`composite -gravity center gradright_resize.jpeg #{img} output.jpeg`
+elsif min_coincidence == sum4
+	`composite -gravity center gradtop_resize.jpeg #{img} output.jpeg`
